@@ -2,8 +2,6 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 200px;
-
 }
 
 li a {
@@ -14,7 +12,6 @@ li a {
     font-family: 'Courier New', Courier, monospace;
 }
 
-
 li a:hover {
     background-color: #555;
     color: white;
@@ -23,4 +20,19 @@ li a:hover {
 li a.active {
     background-color: grey;
     color: white;
+}
+
+@media only screen and (max-width: 1000px) {
+    ul {
+        display: flex;
+    }
+    li {
+        padding: 0;
+        width: 20%;
+    }
+    li a{
+        padding-left: 2px;
+        padding-right: 2px;
+        text-align: center;
+    }
 }

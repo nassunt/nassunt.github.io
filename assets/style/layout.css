@@ -16,7 +16,6 @@ html, body {
 
 
 .wrapper {
-    min-width: 600px;
     display: flex;
     align-items: center; 
     justify-content: center;
@@ -62,5 +61,33 @@ html, body {
     }
     100% {
         opacity: 1;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .wrapper{
+        display: block;
+        padding: 0;
+    }
+    #navbar {
+        padding-bottom: 0;
+    }
+    #content {
+        overflow-y: auto;
+    }
+    #center_wrapper {
+        max-height: calc(100vh - 200px);
+    }
+    .footer{
+        width: 100vw;
+    }
+    h1{
+        text-align: center;
+    }
+}
+
+@media only screen and (max-height: 300px){
+    .footer {
+        display: none;
     }
 }
