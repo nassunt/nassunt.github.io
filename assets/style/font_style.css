@@ -1,0 +1,26 @@
+h1, h2, .footer {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#navbar, h1, h2{
+    /*Fade in animation*/
+    animation: fadeInAnimation ease 0s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+p {
+    /*Fade in animation*/
+    animation: fadeInAnimation ease 3.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+
+    line-height: 1.5;
+}
+
+.footer p {
+    /*Fade in animation*/
+    animation: fadeInAnimation ease 0s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
