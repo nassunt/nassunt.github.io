@@ -9,16 +9,16 @@ h1, h2, .footer {
     animation-fill-mode: forwards;
 }
 
-p {
+p, i, img, #content, #content ul, #content a {
     /*Fade in animation*/
-    animation: fadeInAnimation ease 3.5s;
+    animation: fadeInAnimation ease 1s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
 
     line-height: 1.5;
 }
 
-.footer p {
+.footer p, .footer i{
     /*Fade in animation*/
     animation: fadeInAnimation ease 0s;
     animation-iteration-count: 1;

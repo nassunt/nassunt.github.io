@@ -31,6 +31,9 @@ html, body {
     max-height: calc(100vh - 100px);
 }
 
+#center_wrapper h1 {
+    max-width: 27em;
+}
 
 #center_wrapper div {
     padding: 1em;
@@ -39,8 +42,8 @@ html, body {
 }
 
 #content {
-    max-width: 40em;
-    max-height: 70vh;
+    max-width: 50em;
+    max-height: 77vh;
     overflow-y: auto;
 }
 
@@ -52,6 +55,11 @@ html, body {
     width: 1000px;
     text-align: center;
     align-self: center;
+}
+
+img {
+    width: 100%;
+    max-width: 50em;
 }
 
 

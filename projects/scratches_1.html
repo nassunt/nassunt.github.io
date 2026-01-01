@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../assets/style/font_style.css">
+    <link rel="stylesheet" href="../assets/style/layout.css">
+    <link rel="stylesheet" href="../assets/style/navbar.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="wrapper">
+            <div id="navbar">
+                <ul class="nav">
+                    <li><a class="active" href="../pages/projects.html">Projects</a></li>
+                    <li><a href="../pages/notes.html">Notes</a></li>
+                    <li><a href="../pages/writeups.html">CTF Write-ups</a></li>
+                    <li><a href="../index.html">About</a></li>
+                    <li><a href="../pages/contact.html">Contact Info</a></li>
+                </ul>
+            </div>
+            
+            <div id="center_wrapper">
+                <h1>Scratches RE Part 1 - SCream Resource Files</h1>
+                <div id="content">
+                    <p>&emsp;&emsp;After becoming familiar with reversing and exploiting small x86 Linux ELF binaries for CTFs, I figured it was time to try something new. I picked one of my favorite games, Scratches, a point and click horror game for Windows XP released in 2006. This gave me the opportunity to get some experience reversing larger, real world programs while also dipping my feet in the realm of Windows PE files. I knew from playing the game previously that there were problems running the game in 16:9 resolutions which seemed like a tangible target for the project. All scripts I created for this project are in my Github.</p>
+                    <p>&emsp;&emsp;Since I didn’t actually own a copy of this game at the time of starting this, I first needed to obtain a copy. I’m unsure how difficult physical copies are to come by, but I was able to pick up an unopened copy from someone on Amazon for $27. From reading various forums and articles, it appears the studio that published and developed the game, Nucleosys, went out of business leaving the IP in limbo making digital copies hard to obtain (at least legally). </p>
+                    <p>&emsp;&emsp;Before getting started with disassembling, I looked around at the files packaged with the game. In the eula.txt file it explicitly states no reverse engineering:</p>
+                    <i>“(ii) modify or translate the Software; (iii) reverse engineer, decompile, or disassemble the Software, except to the extent this restriction is expressly prohibited by applicable law”</i>
+                    <p>&emsp;&emsp;Even though the scope of this project falls under interoperability and education, I decided to cover all of my bases and just reach out to the lead developer Agustin Cordes for permission. I discovered that he founded a new studio, Senscape, and was developing a new game called ASYLUM. The developers of this game made a public Discord server I was able to use to send Agustin a message. To my pleasant surprise, he responded and granted me permission! With that out of the way, I was able to get started reversing without having to worry about the feds busting down my door. </p>
+                    <p>These are the files included with the game:</p>
+                    <img src="../assets/images/scratches1_img1.png">
+                    <p>The files that looked the most interesting to me were the .res, .cfg, and (obviously) the .dll and .exe files.</p>
+                    <p>I started by opening the .res files in HxD since I figured they contained the resources.</p>
+                    <img src="../assets/images/scratches1_img2.png">
+                    <p>&emsp;&emsp;From the screenshot above, you can see that this is indeed the case from file names like back-loading.tga and chp1-cupboard1.jpg. The first 20 bytes being “SCream resource file” suggest that this is a proprietary file format used specifically for this game. The SCream engine (Simple CReation Engine for Adventure Makers) was created specifically for this game to help create the “pseudo-3D” effect you see in the game. At a quick glance, both the scratches.res and scream.res files appear to be in the same format. This is the information I gathered from reversing the SCream resource file format: </p>
+                    <p>Header section:</p>
+                    <ul>
+                        <li>Length of the header is 0x104</li>
+                        <li>The first field is the 20 byte “SCream resource file” magic number</li>
+                        <li>The last field is the number of files (4 bytes)</li>
+                    </ul>
+                    <p>File metadata section:</p>
+                    <ul>
+                        <li>Length of the metadata for each file is 0x5C</li>
+                        <li>First field: file name</li>
+                        <li>Penultimate field: offset in .res file (4 bytes)</li>
+                        <li>Last field: file size (4 bytes)</li>
+                    </ul>
+                    <p>Main content section:</p>
+                    <ul>
+                        <li>The main content of the .res file is where the actual file data is stored for each file listed in the metadata section. The start of the data for each file is denoted by the offset in the metadata section.</li>
+                    </ul>
+                    <p>&emsp;&emsp;With a rough idea of the format of the .res files, I created a script to dump all of the files stored in this format. The script takes a path to a SCream resource file and loops through each data file stored and outputs each file to a directory in its original format. Since the number of files is stored in the header, we can use this to determine how many times to loop. The file offset field in the individual file metadata sections tells us which bytes to grab for each file. After running the script, you will be able to view all of the assets used in the game like images, videos and audio files. In theory, the script should work for any SCream resource file but the two used in this game are the only ones I am aware of. This is a link to the script: https://github.com/nassunt/scratches_re/blob/main/scripts/dump_srf.py</p>
+                    <img src="../assets/images/scratches1_img3.png">
+                    <p>&emsp;&emsp;By successfully dumping the data from the SCream resource files we confirmed that at least most of our hypotheses regarding the format are correct. To test this further, I manually updated the file offsets in the metadata section for a few different files to point at new files I added at the end of the resource file. After a bit of trial and error with file types and resolutions I was able to update some .tga files and .ogg files and have them load into the game. You can see in the screenshot below my low effort attempt at recreating the Need for Speed Underground menu screen using this method (Get Low by Lil Jon & The East Side Boyz was also included).</p>
+                    <img src="../assets/images/scratches1_img4.png">
+                    <p>This is the original main menu for reference:</p>
+                    <img src="../assets/images/scratches1_img5.png">
+                    <p>&emsp;&emsp;In the second part of this writeup, I go over my partial 16:9 resolution fix through the use of Frida to hook into OpenGL calls and modify the arguments: </p>
+                    <a href="scratches_2.html">Scratches RE Part 2 - Resolution Fix via OpenGL Frida Hooks</a>
+                    <p>Sources and references:</p>
+                    <ul>
+                        <li><a href="https://en.wikipedia.org/wiki/Scratches_(video_game)">https://en.wikipedia.org/wiki/Scratches_(video_game)</a></li>
+                        <li><a href="https://steamcommunity.com/app/46460/discussions/0/3192489172318465123/">https://steamcommunity.com/app/46460/discussions/0/3192489172318465123/</a></li>
+                        <li><a href="https://www.reddit.com/r/HorrorGaming/comments/1bbycsq/how_can_i_play_scratches_directors_cut/">https://www.reddit.com/r/HorrorGaming/comments/1bbycsq/how_can_i_play_scratches_directors_cut/</a></li>
+                        <li><a href="https://github.com/nassunt/scratches_re">https://github.com/nassunt/scratches_re</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <hr>
+            <p>ns5732@nyu.edu</p>
+
+            <i class="fa fa-linkedin-square"></i>
+            <a href="https://www.linkedin.com/in/nesuarez/">LinkedIn</a>
+
+            <i class="fa fa-github"></i>
+            <a href="https://github.com/nassunt">GitHub</a>
+        </div>
+    </div>
+
+</body>
+</html>
