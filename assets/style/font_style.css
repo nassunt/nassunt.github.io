@@ -1,5 +1,23 @@
-h1, h2, .footer {
+body, html{
+    font-family: Verdana, sans-serif;
+    font-size: 14px;
+}
+
+#navbar, .footer{
+    font-size: 16px;
+}
+
+h1, h2, h3, .footer {
     font-family: 'Courier New', Courier, monospace;
+}
+
+h3{
+    color: grey;
+    margin-top: 0;
+}
+
+h2{
+    margin-bottom: 0;
 }
 
 #navbar, h1, h2{
