@@ -42,7 +42,7 @@ html, body {
 }
 
 #content {
-    max-width: 50em;
+    max-width: 55em;
     max-height: 77vh;
     overflow-y: auto;
 }
@@ -58,8 +58,8 @@ html, body {
 }
 
 img {
-    width: 100%;
-    max-width: 50em;
+    /*width: 100%;*/
+    max-width: 55em;
 }
 
 
